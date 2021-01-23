@@ -5,7 +5,7 @@ import errorHandler from "./middlewares/errorHandler.js";
 import transactions from "./routes/transactions.js";
 import rooms from "./routes/room.js";
 import users from "./routes/user.js";
-// connect to mongo with mongoose
+// Connect to mongo with mongoose
 mongoConnection();
 
 //express

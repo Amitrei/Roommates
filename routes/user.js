@@ -1,7 +1,7 @@
 import express from "express";
-import { User } from "../models/user.js";
-import EntitiesService from "./../services/EntitiesService.js";
 const router = express.Router();
+import EntitiesService from "./../services/EntitiesService.js";
+import { User } from "../models/user.js";
 const { findAll, create, findById, update, deleteById } = new EntitiesService(User);
 
 router.get("/", async (req, res) => {

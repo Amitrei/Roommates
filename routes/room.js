@@ -1,14 +1,10 @@
 import express from "express";
-import { Room } from "../models/room.js";
-import { Transcation as RoomTransactions } from "../models/transaction.js";
-import { User } from "../models/user.js";
-import RoomService from "./../services/RoomService.js";
+import { roomService as service } from "./../services/servicesManager.js";
 
-const service = new RoomService(Room, RoomTransactions, User);
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const rooms = await Room.find();
+  const rooms = await service.findAll();
   res.send(rooms);
 });
 
@@ -30,6 +26,12 @@ router.put("/:id", async (req, res) => {
 router.post("/:roomId/members/:memberId", async (req, res) => {
   const { roomId, memberId } = req.params;
   res.send(await service.addMember(roomId, memberId));
+});
+
+// Removing a user
+router.delete("/:roomId/members/:memberId", async (req, res) => {
+  const { roomId, memberId } = req.params;
+  res.send(await service.removeMember(roomId, memberId));
 });
 
 export default router;

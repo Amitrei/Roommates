@@ -2,10 +2,10 @@ import EntitiesService from "./EntitiesService.js";
 import BadRequest from "./../errors/BadRequest.js";
 
 export default class RoomService extends EntitiesService {
-  constructor(roomModel, transactionModel, userModel) {
+  constructor(roomModel, transactionService, userService) {
     super(roomModel);
-    this.transactionService = new EntitiesService(transactionModel);
-    this.userService = new EntitiesService(userModel);
+    this.transactionService = transactionService;
+    this.userService = userService;
   }
 
   createRoom = async (newRoom) => {
@@ -21,13 +21,13 @@ export default class RoomService extends EntitiesService {
   };
 
   deleteRoom = async (roomId) => {
-    const room = await this.findById(room);
+    const room = await this.findById(roomId);
     // If room found (Error will be throwen if not found), delete also the transactions of this room.
-    this.transactionService.deleteByQuery({ roomId: deletedRoom._id });
+    await this.transactionService.deleteByQuery({ roomId: room._id });
 
     // Reset the roomId property from the members.
-    room.members.forEach((member) => {
-      this.transactionService.updateById(member._id, { roomId: "" });
+    room.members.forEach(async (memberId) => {
+      await this.userService.updateById(memberId, { roomId: null });
     });
 
     const deletedRoom = await this.deleteById(roomId);
@@ -38,7 +38,7 @@ export default class RoomService extends EntitiesService {
   addMember = async (roomId, userId) => {
     const room = await this.findById(roomId);
     const user = await this.userService.findById(userId);
-    
+
     const isUserAlreadyMember = room.members.filter((m) => m._id.equals(user._id));
     if (isUserAlreadyMember.length)
       throw new BadRequest(`${user.name} is already a member of this room.`);
@@ -51,5 +51,24 @@ export default class RoomService extends EntitiesService {
     await this.userService.update(user, { roomId: room._id });
 
     return room;
+  };
+
+  removeMember = async (roomId, userId) => {
+    const room = await this.findById(roomId);
+    const user = await this.userService.findById(userId);
+
+    const isUserAlreadyMember = room.members.filter((m) => m._id.equals(user._id));
+    if (!isUserAlreadyMember.length)
+      throw new BadRequest("This user is not a member of this room.");
+
+    // Removing the user from the room members array
+    const members = [...room.members];
+    const userIndex = members.findIndex((m) => m._id.equals(userId));
+    members.splice(userIndex, 1);
+
+    // Resetting the user roomId property.
+    await this.userService.update(user, { roomId: null });
+
+    return await this.update(room, { members });
   };
 }
