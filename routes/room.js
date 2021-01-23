@@ -32,6 +32,6 @@ router.post("/:roomId/members/:memberId", async (req, res) => {
 router.delete("/:roomId/members/:memberId", async (req, res) => {
   const { roomId, memberId } = req.params;
   res.send(await service.removeMember(roomId, memberId));
-});
+ });
 
 export default router;
