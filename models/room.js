@@ -9,6 +9,8 @@ export const roomSchema = mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "transaction" }],
     default: [],
   },
+
+  totalExpenses: { type: Number, default: 0, min: 0 },
 });
 
 export const Room = mongoose.model("room", roomSchema);

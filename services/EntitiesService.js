@@ -11,10 +11,24 @@ export default class EntitiesService {
     return await this.model.create(model);
   };
 
+  findOne = async (query) => {
+    const model = await this.model.findOne(query);
+    if (!model) throw new NotFoundError(this.modelName);
+    return model;
+  };
+
+  find = async (query) => {
+    return await this.model.find(query);
+  };
+
   findById = async (id) => {
     const model = await this.model.findById(id);
     if (!model) throw new NotFoundError(this.modelName);
     return model;
+  };
+
+  findAll = async () => {
+    return await this.model.find();
   };
 
   deleteById = async (id) => {
@@ -27,10 +41,6 @@ export default class EntitiesService {
     const deletedModel = await this.model.deleteOne(query);
     if (!deletedModel) throw new NotFoundError(this.modelName);
     return deletedModel;
-  };
-
-  findAll = async () => {
-    return await this.model.find();
   };
 
   updateById = async (id, updateRequest) => {

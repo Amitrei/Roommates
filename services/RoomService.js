@@ -9,21 +9,15 @@ export default class RoomService extends EntitiesService {
   }
 
   createRoom = async (newRoom) => {
-    // Creating empty room and creating empty transactions
     const room = await this.create(newRoom);
-
-    // Creating empty transactions and assigning the roomId
-    if (room) {
-      await this.transactionService.create({ roomId: room._id });
-    }
-
     return room;
   };
 
   deleteRoom = async (roomId) => {
     const room = await this.findById(roomId);
-    // If room found (Error will be throwen if not found), delete also the transactions of this room.
-    await this.transactionService.deleteByQuery({ roomId: room._id });
+
+    // If room found (Error will be throwen if not found), delete also all transactions releated this room.
+    room.transactions.forEach(async (t) => await this.transactionService.deleteById(t._id));
 
     // Reset the roomId property from the members.
     room.members.forEach(async (memberId) => {
