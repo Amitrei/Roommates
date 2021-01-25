@@ -1,20 +1,14 @@
 import express from "express";
 const router = express.Router();
-import EntitiesService from "./../services/EntitiesService.js";
-import { User } from "../models/user.js";
-const { findAll, create, findById, update, deleteById } = new EntitiesService(User);
+import { userEntity as service } from "../services/servicesManager.js";
+const { findAll, create, findById, update, deleteById } = service;
 
 router.get("/", async (req, res) => {
   res.send(await findAll());
 });
 
 router.post("/", async (req, res) => {
-  const user = {
-    name: req.body.name,
-    roomId: null,
-  };
-
-  res.send(await create(user));
+  res.send(await create(req.body));
 });
 
 router.get("/:id", async (req, res) => {

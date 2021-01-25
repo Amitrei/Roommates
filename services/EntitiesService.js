@@ -1,13 +1,18 @@
 import NotFoundError from "./../errors/NotFound.js";
 import NoSuchProperty from "./../errors/NoSuchProperty.js";
+import ValidationError from "./../errors/ValidationError.js";
 
 export default class EntitiesService {
-  constructor(model) {
-    this.model = model;
-    this.modelName = this.model.modelName;
+  constructor(modelManager) {
+    this.model = modelManager().model;
+    this.modelName = modelManager().model.modelName;
+    this.validate = modelManager().validate;
   }
 
   create = async (model) => {
+    const { error } = this.validate(model);
+    if (error) throw new ValidationError(error.details[0].message);
+
     return await this.model.create(model);
   };
 

@@ -28,7 +28,7 @@ router.post("/:roomId/members/:memberId", async (req, res) => {
   res.send(await service.addMember(roomId, memberId));
 });
 
-// Removing a user
+// Removing a member
 router.delete("/:roomId/members/:memberId", async (req, res) => {
   const { roomId, memberId } = req.params;
   res.send(await service.removeMember(roomId, memberId));

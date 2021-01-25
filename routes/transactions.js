@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 
 router.post("/:roomId", async (req, res) => {
   const { body } = req;
-  const userId = "600c3c9a7816d52c8bec3c6e";
+  const userId = "600ebfa415be7f32ec87c6a2";
   body.madeBy = userId;
   body.roomId = req.params.roomId;
   res.send(await service.createTransaction(body));

@@ -1,10 +1,22 @@
 import mongoose from "mongoose";
-import { transactionSchema } from "./transaction.js";
+import Joi from "joi";
+import joiObjectId from "joi-objectid";
+Joi.objectId = joiObjectId(Joi);
 
-export const roomSchema = mongoose.Schema({
-  name: String,
+export default () =>
+  Object.freeze({
+    schema: roomSchema,
+    model: Room,
+    validate,
+  });
+
+const roomSchema = mongoose.Schema({
+  name: { type: String, required: true, minLength: 3, maxLength: 30 },
   admin: Number,
-  members: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], default: [] },
+  members: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    default: [],
+  },
   transactions: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "transaction" }],
     default: [],
@@ -13,4 +25,16 @@ export const roomSchema = mongoose.Schema({
   totalExpenses: { type: Number, default: 0, min: 0 },
 });
 
-export const Room = mongoose.model("room", roomSchema);
+const validate = (room) => {
+  const validateRoomSchema = Joi.object({
+    name: Joi.string().required().min(3).alphanum().max(30),
+    adming: Joi.number(),
+    members: Joi.array().items(Joi.objectId()).allow(undefined),
+    transactions: Joi.array().items(Joi.objectId()).allow(undefined),
+    totalExpenses: Joi.number().min(0).allow(undefined),
+  });
+
+  return validateRoomSchema.validate(room);
+};
+
+const Room = mongoose.model("room", roomSchema);

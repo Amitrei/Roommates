@@ -1,5 +1,6 @@
 import EntitiesService from "./EntitiesService.js";
 import BadRequest from "./../errors/BadRequest.js";
+import excludeProps from "../utils/excludeProps.js";
 
 export default class RoomService extends EntitiesService {
   constructor(roomModel, transactionService, userService) {
@@ -9,8 +10,9 @@ export default class RoomService extends EntitiesService {
   }
 
   createRoom = async (newRoom) => {
-    const room = await this.create(newRoom);
-    return room;
+    const excludedRoom = excludeProps(newRoom, "members", "transactions", "totalExpenses", "admin");
+    await this.create(excludedRoom);
+    return excludedRoom;
   };
 
   deleteRoom = async (roomId) => {
