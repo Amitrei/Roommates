@@ -1,2 +1,4 @@
 node_modules
 .env
+babel.config.cjs
+jest.config.cjs
