@@ -1,12 +1,16 @@
 import express from "express";
 import passport from "passport";
 const router = express.Router();
-import iconvLite from "iconv-lite";
 
 // google login
 router.get(
   "/",
-  passport.authenticate("google", { scope: ["https://www.googleapis.com/auth/plus.login"] })
+  passport.authenticate("google", {
+    scope: [
+      "https://www.googleapis.com/auth/plus.login",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+  })
 );
 
 router.get(
@@ -26,3 +30,8 @@ router.get("/show", (req, res) => {
   res.send(req.user);
 });
 export default router;
+
+router.get("/user", (req, res) => {
+  const user = { ...req.user };
+  res.status(201).send(user);
+});

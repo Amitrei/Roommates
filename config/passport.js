@@ -1,17 +1,24 @@
 import passport from "passport";
 import dotenv from "dotenv";
-import iconvLite from "iconv-lite";
-
-dotenv.config();
 import googleAuth from "passport-google-oauth";
-const GoogleStrategy = googleAuth.OAuth2Strategy;
+
 import { userEntity as service } from "./../services/servicesManager.js";
+const GoogleStrategy = googleAuth.OAuth2Strategy;
+dotenv.config();
+
 
 passport.serializeUser(function (user, done) {
-  done(null, user);
+  done(null, user._id);
 });
 
-passport.deserializeUser(function (user, done) {
+passport.deserializeUser(async function (id, done) {
+  let user;
+  try {
+    user = await service.findOne({ _id: id }, "email", "roomId");
+  } catch (ex) {
+    user = null;
+  }
+
   done(null, user);
 });
 
@@ -22,14 +29,23 @@ export default passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
-    function (accessToken, refreshToken, profile, done) {
-      const myProfile = { ...profile };
-      // const someEncodedString = Buffer.from("moshe", "utf-8");
-      service.create({ name: "a" }).then((currentUser) => {
-        done(null, currentUser);
-      });
+    async function (accessToken, refreshToken, profile, done) {
+      let user;
 
-      // return done(null, profile);
+      try {
+        user = await service.findOne({ googleId: profile.id });
+      } catch (ex) {
+        // if NotFound expection is thrown create a new one
+        if (ex.name === "NotFoundError") {
+          user = await service.create({
+            email: profile.emails[0].value,
+            googleId: profile.id,
+            profilePicture: profile.photos[0].value,
+          });
+        }
+      }
+
+      return done(null, user);
     }
   )
 );

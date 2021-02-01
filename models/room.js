@@ -29,9 +29,9 @@ const validate = (room) => {
   const validateRoomSchema = Joi.object({
     name: Joi.string().required().min(3).alphanum().max(30),
     adming: Joi.number(),
-    members: Joi.array().items(Joi.objectId()).allow(undefined),
-    transactions: Joi.array().items(Joi.objectId()).allow(undefined),
-    totalExpenses: Joi.number().min(0).allow(undefined),
+    members: Joi.array().items(Joi.objectId()),
+    transactions: Joi.array().items(Joi.objectId()),
+    totalExpenses: Joi.number().min(0)
   });
 
   return validateRoomSchema.validate(room);

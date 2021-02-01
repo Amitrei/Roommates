@@ -8,6 +8,7 @@ import users from "./routes/user.js";
 import auth from "./routes/auth.js";
 import cookie from "cookie-session";
 import passport from "passport";
+import cors from "cors";
 import passportConfig from "./config/passport.js";
 
 // Connect to mongo with mongoose
@@ -23,11 +24,19 @@ app.listen(port, () => {
 
 // middlewares
 
+app.use(
+  cors({
+    origin: "http://localhost:3000", // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // allow session cookie from browser to pass through
+  })
+);
 app.use(express.json());
 app.use(
   cookie({
     name: "shotafim-session",
     keys: ["key1", "key2"],
+    httpOnly: false,
   })
 );
 

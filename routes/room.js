@@ -1,9 +1,11 @@
 import express from "express";
 import { roomService as service } from "./../services/servicesManager.js";
+import auth from "../middlewares/auth.js";
+import roomPermissions from "../middlewares/roomPermissions.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   const rooms = await service.findAll();
   res.send(rooms);
 });
@@ -23,8 +25,9 @@ router.put("/:id", async (req, res) => {
 });
 
 // Adding a member
-router.post("/:roomId/members/:memberId", async (req, res) => {
+router.post("/:roomId/members/:memberId", [auth, roomPermissions], async (req, res) => {
   const { roomId, memberId } = req.params;
+  console.log(roomId, memberId);
   res.send(await service.addMember(roomId, memberId));
 });
 
@@ -32,6 +35,6 @@ router.post("/:roomId/members/:memberId", async (req, res) => {
 router.delete("/:roomId/members/:memberId", async (req, res) => {
   const { roomId, memberId } = req.params;
   res.send(await service.removeMember(roomId, memberId));
- });
+});
 
 export default router;

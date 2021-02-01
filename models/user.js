@@ -11,16 +11,20 @@ export default () =>
   });
 
 const userSchema = mongoose.Schema({
-  name: String,
-  roomId: mongoose.Schema.Types.ObjectId,
+  email: { type: String, required: true, unique: true },
+  googleId: { type: Number, required: true, unique: true },
+  profilePicture: { type: String },
+  roomId: {type : mongoose.Schema.Types.ObjectId, default:null},
 });
 
 const User = mongoose.model("user", userSchema);
 
 const validate = (user) => {
   const validateUserSchema = Joi.object({
-    name: Joi.string().required().min(3).max(255),
-    roomId: Joi.objectId(),
+    email: Joi.string().required().min(5).max(255).email(),
+    profilePicture: Joi.string(),
+    googleId: Joi.number().unsafe().required(),
+    roomId: Joi.objectId().allow(null),
   });
 
   return validateUserSchema.validate(user);

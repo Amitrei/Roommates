@@ -16,8 +16,15 @@ export default class EntitiesService {
     return await this.model.create(model);
   };
 
-  findOne = async (query) => {
-    const model = await this.model.findOne(query);
+  findOne = async (query, ...selector) => {
+    let model;
+    if (selector.length) {
+      const selectors = selector.join(" ");
+      model = await this.model.findOne(query, selectors);
+    } else if (!selector.length) {
+      model = await this.model.findOne(query);
+    }
+
     if (!model) throw new NotFoundError(this.modelName);
     return model;
   };
