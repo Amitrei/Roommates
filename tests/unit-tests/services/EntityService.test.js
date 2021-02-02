@@ -1,6 +1,5 @@
 import EntitiesService from "./../../../services/EntitiesService.js";
 import { modelMock, modelManagerMock, service } from "./modelMock.js";
-import _, { update } from "lodash";
 import ValidationError from "./../../../errors/ValidationError.js";
 import NotFoundError from "./../../../errors/NotFound.js";
 import NoSuchProperty from "./../../../errors/NoSuchProperty.js";
