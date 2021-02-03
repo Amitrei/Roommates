@@ -1,5 +1,7 @@
-import EntitiesService from "./../../../services/EntitiesService.js";
-import RoomService from "./../../../services/RoomService.js";
+import EntitiesService from "../../../services/EntitiesService.js";
+import RoomService from "../../../services/RoomService.js";
+import TransactionService from "./../../../services/TransactionService.js";
+import _ from "lodash";
 export const modelManagerMock = (
   model,
   validate = () => ({
@@ -33,3 +35,39 @@ export const serviceMock = {
 export const service = new EntitiesService(modelManagerMock(modelMock));
 
 export const roomService = new RoomService(modelManagerMock(modelMock), serviceMock, serviceMock);
+
+export const userServiceMock = _.cloneDeep(serviceMock);
+export const roomServiceMock = _.cloneDeep(serviceMock);
+
+export const transationModelMock = {
+  _id: { equals: jest.fn().mockReturnValue(true) },
+  roomId: 99,
+  madeBy: 22,
+  amount: 100,
+  category: 1,
+  date: Date.now(),
+  save: jest.fn().mockReturnValue(true),
+};
+
+export const roomModelMock = {
+  _id: { equals: jest.fn().mockReturnValue(true) },
+  name: "mockedRoom",
+  admin: 99,
+  members: [{}],
+  transactions: [
+    { ...transationModelMock },
+    { ...transationModelMock },
+    { ...transationModelMock },
+  ],
+  totalExpenses: 0,
+};
+
+userServiceMock.findById = jest.fn().mockResolvedValue(roomModelMock);
+
+roomServiceMock.findById = jest.fn().mockResolvedValue(roomModelMock);
+
+export const transactionService = new TransactionService(
+  modelManagerMock(modelMock),
+  userServiceMock,
+  roomServiceMock
+);

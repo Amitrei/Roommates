@@ -1,4 +1,4 @@
-import { modelMock, serviceMock, roomService, service } from "./modelMock.js";
+import { modelMock, serviceMock, roomService, service } from "./mocks.js";
 import BadRequest from "./../../../errors/BadRequest.js";
 
 describe("createRoom", () => {
@@ -144,5 +144,62 @@ describe("addMember", () => {
     const results = await roomService.addMember(1, 1);
     const service = roomService.findById();
     expect(results.id).toBe(service.id);
+  });
+});
+
+describe("removeMember", () => {
+  let findByIdSpy, serviceUpdateSpy, roomServiceUpdateSpy;
+  beforeEach(async () => {
+    roomServiceUpdateSpy = jest.spyOn(roomService, "update").mockImplementation(() => ({}));
+    serviceUpdateSpy = jest.spyOn(serviceMock, "update").mockImplementation(() => ({}));
+    findByIdSpy = jest.spyOn(roomService, "findById").mockImplementation(() => ({
+      id: 1,
+      members: [
+        { _id: { equals: jest.fn().mockReturnValue(false) } },
+        { _id: { equals: jest.fn().mockReturnValue(true) } },
+        { _id: { equals: jest.fn().mockReturnValue(false) } },
+      ],
+    }));
+
+    await roomService.removeMember(1, 1);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Should invoke the findById method of the roomService", async () => {
+    expect(findByIdSpy).toHaveBeenCalled();
+  });
+
+  it("Should invoke the findById method of the userService", async () => {
+    expect(serviceMock.findById.mock.calls.length).toBe(1);
+  });
+
+  it("Should throw an BadRequest error if user is not a member of this room", async () => {
+    // all equals are false -> will throw BadRequest error no user was found
+    findByIdSpy = jest.spyOn(roomService, "findById").mockImplementation(() => ({
+      id: 1,
+      members: [
+        { _id: { equals: jest.fn().mockReturnValue(false) } },
+        { _id: { equals: jest.fn().mockReturnValue(false) } },
+        { _id: { equals: jest.fn().mockReturnValue(false) } },
+      ],
+    }));
+
+    const results = async () => await roomService.removeMember(1, 1);
+    expect(results).rejects.toThrow(BadRequest);
+  });
+
+  it("Should invoke the update method of the user service inorder to reset roomId prop", async () => {
+    expect(serviceUpdateSpy).toHaveBeenCalled();
+  });
+
+  it("Should have removed the member from the members array", async () => {
+    expect(roomServiceUpdateSpy.mock.calls[0][1].members.length).toBe(2);
+  });
+
+  it("Should invoke the update method of the roomService", async () => {
+    expect(roomServiceUpdateSpy).toHaveBeenCalled();
   });
 });
