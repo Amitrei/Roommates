@@ -12,7 +12,7 @@ export default () =>
 
 const roomSchema = mongoose.Schema({
   name: { type: String, required: true, minLength: 3, maxLength: 30 },
-  admin: Number,
+  admin: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   members: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     default: [],
@@ -28,10 +28,10 @@ const roomSchema = mongoose.Schema({
 const validate = (room) => {
   const validateRoomSchema = Joi.object({
     name: Joi.string().required().min(3).alphanum().max(30),
-    adming: Joi.number(),
+    admin: Joi.objectId().required(),
     members: Joi.array().items(Joi.objectId()),
     transactions: Joi.array().items(Joi.objectId()),
-    totalExpenses: Joi.number().min(0)
+    totalExpenses: Joi.number().min(0),
   });
 
   return validateRoomSchema.validate(room);

@@ -1,37 +1,35 @@
 import express from "express";
-import { transactionService as service } from "../services/servicesManager.js";
-
 const router = express.Router();
+import { transactionService as service } from "../services/servicesManager.js";
+import { fromClient } from "../utils/mappers/transactionMapper.js";
+import auth from "../middlewares/auth.js";
+import roomPermissions from "../middlewares/roomPermissions.js";
+import transactionPermissions from "../middlewares/transactionPermissions.js";
 
 router.get("/", async (req, res) => {
   res.send(await service.findAll());
 });
 
-router.post("/:roomId", async (req, res) => {
-  const { body } = req;
-  const userId = "600ebfa415be7f32ec87c6a2";
-  body.madeBy = userId;
-  body.roomId = req.params.roomId;
-  res.send(await service.createTransaction(body));
+router.post("/:roomId", [auth, roomPermissions], async (req, res) => {
+  const { body, user, params } = req;
+  const dto = fromClient(body, user, params.roomId);
+  res.send(await service.createTransaction(dto));
 });
 
-router.delete("/:roomId/:transId", async (req, res) => {
-  const { body, params } = req;
-  const userId = "600c3c9a7816d52c8bec3c6e";
-  body.madeBy = userId;
-  body.roomId = params.roomId;
-  res.send(await service.deleteTransaction(params.transId));
+router.delete("/:roomId/:transId", [auth, transactionPermissions], async (req, res) => {
+  res.send(await service.deleteTransaction(req.params.transId));
 });
 
-router.patch("/:transId", async (req, res) => {
-  res.send(await service.updateTransaction(req.params.transId, req.body));
+router.patch("/:transId", [auth, transactionPermissions], async (req, res) => {
+  const dto = fromClient(req.body, req.user);
+  res.send(await service.updateTransaction(req.params.transId, dto));
 });
 
-router.get("/user/:userId", async (req, res) => {
+router.get("/user/:userId", [auth, transactionPermissions], async (req, res) => {
   res.send(await service.getTransactionsOfUser(req.params.userId));
 });
 
-router.get("/room/:roomId", async (req, res) => {
+router.get("/room/:roomId", [auth, roomPermissions], async (req, res) => {
   res.send(await service.getTransactionsOfRoom(req.params.roomId));
 });
 

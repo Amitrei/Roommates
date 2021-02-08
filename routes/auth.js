@@ -17,6 +17,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   function (req, res) {
+    console.log(res.cookies);
     res.redirect("/api/auth/show");
   }
 );
@@ -27,11 +28,13 @@ router.get("/logout", function (req, res) {
 });
 
 router.get("/show", (req, res) => {
+  console.log(req.session);
   res.send(req.user);
 });
-export default router;
 
 router.get("/user", (req, res) => {
   const user = { ...req.user };
   res.status(201).send(user);
 });
+
+export default router;

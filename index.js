@@ -1,7 +1,7 @@
 import express from "express";
-import "express-async-errors";
 import mongoConnection from "./startup/mongoose.js";
 import routes from "./startup/routes.js";
+import "express-async-errors";
 
 // Connect to mongo with mongoose
 mongoConnection();
@@ -16,3 +16,5 @@ app.listen(port, () => {
 
 //routes and middlewares
 routes(app);
+
+console.log(process.env.NODE_ENV);

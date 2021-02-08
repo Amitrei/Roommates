@@ -37,7 +37,7 @@ export default class RoomService extends EntitiesService {
 
     const isUserAlreadyMember = room.members.filter((m) => m._id.equals(user._id));
     if (isUserAlreadyMember.length)
-      throw new BadRequest(`${user.name} is already a member of this room.`);
+      throw new BadRequest(`${user.email} is already a member of this room.`);
 
     // adding the member to the array
     const members = [...room.members, user];

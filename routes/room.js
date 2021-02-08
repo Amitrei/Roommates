@@ -1,7 +1,7 @@
 import express from "express";
 import { roomService as service } from "./../services/servicesManager.js";
 import auth from "../middlewares/auth.js";
-import roomPermissions from "../middlewares/roomPermissions.js";
+import adminPermissions from "../middlewares/adminPermissions.js";
 
 const router = express.Router();
 
@@ -10,12 +10,12 @@ router.get("/", auth, async (req, res) => {
   res.send(rooms);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { body } = req;
   res.send(await service.createRoom(body));
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, adminPermissions], async (req, res) => {
   res.send(await service.deleteRoom(req.params.id));
 });
 
@@ -25,14 +25,14 @@ router.put("/:id", async (req, res) => {
 });
 
 // Adding a member
-router.post("/:roomId/members/:memberId", [auth, roomPermissions], async (req, res) => {
+router.post("/:roomId/members/:memberId", [auth, adminPermissions], async (req, res) => {
   const { roomId, memberId } = req.params;
   console.log(roomId, memberId);
   res.send(await service.addMember(roomId, memberId));
 });
 
 // Removing a member
-router.delete("/:roomId/members/:memberId", async (req, res) => {
+router.delete("/:roomId/members/:memberId", [auth, adminPermissions], async (req, res) => {
   const { roomId, memberId } = req.params;
   res.send(await service.removeMember(roomId, memberId));
 });
