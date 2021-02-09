@@ -10,8 +10,8 @@ export default class RoomService extends EntitiesService {
   }
 
   createRoom = async (newRoom) => {
-    const excludedRoom = excludeProps(newRoom, "members", "transactions", "totalExpenses", "admin");
-    await this.create(excludedRoom);
+    const excludedRoom = excludeProps(newRoom, "members", "transactions", "totalExpenses");
+    const savedRoom = await this.create(excludedRoom);
     return excludedRoom;
   };
 
@@ -28,7 +28,7 @@ export default class RoomService extends EntitiesService {
 
     const deletedRoom = await this.deleteById(roomId);
 
-    return deletedRoom;
+    return deletedRoom.name;
   };
 
   addMember = async (roomId, userId) => {

@@ -2,9 +2,9 @@ import { roomService } from "../services/servicesManager.js";
 
 // Admin permissions middleware for the room
 export default async (req, res, next) => {
-  const { roomId } = req.params;
+  const { id } = req.params;
 
-  const room = await roomService.findById(roomId);
+  const room = await roomService.findById(id);
 
   if (room.admin && req.user && room.admin.equals(req.user._id)) return next();
 

@@ -37,4 +37,4 @@ const validate = (room) => {
   return validateRoomSchema.validate(room);
 };
 
-const Room = mongoose.model("room", roomSchema);
+export const Room = mongoose.model("room", roomSchema);

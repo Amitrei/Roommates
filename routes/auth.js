@@ -28,7 +28,6 @@ router.get("/logout", function (req, res) {
 });
 
 router.get("/show", (req, res) => {
-  console.log(req.session);
   res.send(req.user);
 });
 

@@ -2,16 +2,12 @@ import express from "express";
 import { roomService as service } from "./../services/servicesManager.js";
 import auth from "../middlewares/auth.js";
 import adminPermissions from "../middlewares/adminPermissions.js";
-
+import { toClient } from './../utils/mappers/roomMapper';
 const router = express.Router();
-
-router.get("/", auth, async (req, res) => {
-  const rooms = await service.findAll();
-  res.send(rooms);
-});
 
 router.post("/", auth, async (req, res) => {
   const { body } = req;
+  body.admin = req.user._id;
   res.send(await service.createRoom(body));
 });
 

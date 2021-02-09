@@ -7,5 +7,6 @@ export default (err, req, res, next) => {
     return res.status(400).send(err.message);
   }
 
-  res.status(500).send("something went wrong...");
+  console.error(err);
+  res.status(500).send(err);
 };
