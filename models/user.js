@@ -14,10 +14,10 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   googleId: { type: Number, required: true, unique: true },
   profilePicture: { type: String },
-  roomId: {type : mongoose.Schema.Types.ObjectId, default:null},
+  roomId: { type: mongoose.Schema.Types.ObjectId, default: null },
 });
 
-const User = mongoose.model("user", userSchema);
+export const User = mongoose.model("user", userSchema);
 
 const validate = (user) => {
   const validateUserSchema = Joi.object({

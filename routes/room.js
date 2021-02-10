@@ -2,7 +2,6 @@ import express from "express";
 import { roomService as service } from "./../services/servicesManager.js";
 import auth from "../middlewares/auth.js";
 import adminPermissions from "../middlewares/adminPermissions.js";
-import { toClient } from './../utils/mappers/roomMapper';
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
@@ -12,25 +11,25 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.delete("/:id", [auth, adminPermissions], async (req, res) => {
-  res.send(await service.deleteRoom(req.params.id));
+  res.status(202).send(await service.deleteRoom(req.params.id));
 });
 
-// *TODO* - complete this route
-router.put("/:id", async (req, res) => {
-  const room = await Room.findByIdAndUpdate(req.params.id, {});
+// Updating room name
+router.put("/:id", [auth, adminPermissions], async (req, res) => {
+  res.send(await service.updateRoomName(req.params.id, req.body));
 });
 
 // Adding a member
-router.post("/:roomId/members/:memberId", [auth, adminPermissions], async (req, res) => {
-  const { roomId, memberId } = req.params;
-  console.log(roomId, memberId);
-  res.send(await service.addMember(roomId, memberId));
+router.post("/:id/members/:memberId", [auth, adminPermissions], async (req, res) => {
+  const { id, memberId } = req.params;
+  console.log(id, memberId);
+  res.send(await service.addMember(id, memberId));
 });
 
 // Removing a member
-router.delete("/:roomId/members/:memberId", [auth, adminPermissions], async (req, res) => {
-  const { roomId, memberId } = req.params;
-  res.send(await service.removeMember(roomId, memberId));
+router.delete("/:id/members/:memberId", [auth, adminPermissions], async (req, res) => {
+  const { id, memberId } = req.params;
+  res.send(await service.removeMember(id, memberId));
 });
 
 export default router;

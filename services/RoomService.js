@@ -1,6 +1,7 @@
 import EntitiesService from "./EntitiesService.js";
 import BadRequest from "./../errors/BadRequest.js";
 import excludeProps from "../utils/excludeProps.js";
+import NoSuchProperty from "./../errors/NoSuchProperty.js";
 
 export default class RoomService extends EntitiesService {
   constructor(roomModel, transactionService, userService) {
@@ -28,7 +29,7 @@ export default class RoomService extends EntitiesService {
 
     const deletedRoom = await this.deleteById(roomId);
 
-    return deletedRoom.name;
+    return deletedRoom;
   };
 
   addMember = async (roomId, userId) => {
@@ -47,6 +48,13 @@ export default class RoomService extends EntitiesService {
     await this.userService.update(user, { roomId: room._id });
 
     return room;
+  };
+
+  updateRoomName = async (roomId, requestBody) => {
+    const room = await this.findById(roomId);
+    const { name } = requestBody;
+    if (!name) throw new NoSuchProperty("room", "name");
+    return await this.update(room, { name });
   };
 
   removeMember = async (roomId, userId) => {
