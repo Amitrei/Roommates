@@ -13,7 +13,12 @@ export default class RoomService extends EntitiesService {
   createRoom = async (newRoom) => {
     const excludedRoom = excludeProps(newRoom, "members", "transactions", "totalExpenses");
     const savedRoom = await this.create(excludedRoom);
-    return excludedRoom;
+    if (savedRoom) {
+      // Setting roomID prop on the user to the created room.
+      await this.userService.updateById(newRoom.admin, { roomId: savedRoom._id });
+    }
+
+    return savedRoom;
   };
 
   deleteRoom = async (roomId) => {

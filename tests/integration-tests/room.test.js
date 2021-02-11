@@ -5,30 +5,22 @@ import { User } from "../../models/user.js";
 import { roomService } from "../../services/servicesManager.js";
 import authCreateSession from "./authCreateSession.js";
 import expressServer from "../../index.js";
-
+import { createRoom, fakeObjectId } from "./testsUtils.js";
 // Using agent to store auth session
 const agent = superagent.agent();
 const API_URL = "http://localhost:3002/api/rooms";
-const fakeObjectId = "60134d59bd81d4148246d2d5";
 
 let server;
 let currentUser;
 
-const createRoom = async (adminId) => {
-  return await new Room({
-    name: "newRoom",
-    admin: adminId,
-  }).save();
-};
-
 describe("/api/rooms", () => {
-  beforeAll(async () => {
+  beforeAll(async () => {});
+
+  beforeEach(async () => {
     await authCreateSession(agent).login();
     const { body } = await authCreateSession(agent).getUser();
     currentUser = body;
-  });
 
-  beforeEach(() => {
     server = expressServer;
   });
   afterEach(async () => {

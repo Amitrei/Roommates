@@ -18,7 +18,7 @@ const transactionSchema = mongoose.Schema({
   date: { type: Date, default: new Date() },
 });
 
-const Transaction = mongoose.model("transaction", transactionSchema);
+export const Transaction = mongoose.model("transaction", transactionSchema);
 
 
 const validate = (transaction) => {

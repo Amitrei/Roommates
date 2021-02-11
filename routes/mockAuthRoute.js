@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-
+import { User } from "../models/user.js";
 const fakeUser = {
   _id: "60134d59bd81d4148296d3d3",
   email: "mockedUser@gmail.com",
@@ -9,11 +9,16 @@ const fakeUser = {
   profilePicture: "http://www.google.com",
 };
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   if (!req.session) {
     req.session = {};
   }
-  req.session.user_tmp = fakeUser;
+
+  let mockedUserInDB = await User.findOne({ email: fakeUser.email });
+  if (!mockedUserInDB) {
+    mockedUserInDB = await new User({ email: fakeUser.email, googleId: fakeUser.googleId }).save();
+  }
+  req.session.user_tmp = mockedUserInDB;
   res.send(req.session.user);
 });
 

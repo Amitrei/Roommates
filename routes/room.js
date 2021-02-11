@@ -22,7 +22,6 @@ router.put("/:id", [auth, adminPermissions], async (req, res) => {
 // Adding a member
 router.post("/:id/members/:memberId", [auth, adminPermissions], async (req, res) => {
   const { id, memberId } = req.params;
-  console.log(id, memberId);
   res.send(await service.addMember(id, memberId));
 });
 
