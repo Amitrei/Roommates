@@ -180,19 +180,100 @@ describe("api/transactions route", () => {
     });
   });
 
-  describe("GET /user/:userId - get user transactions", () => {
-    const currentApiURL = (userId) => `${API_URL}/user/${userId}`;
+  describe("GET /user/ - get user transactions", () => {
+    const currentApiURL = `${API_URL}/user`;
 
     it("Should return 401 if user aint logged in", async () => {
       await superagent
-        .get(currentApiURL(fakeObjectId))
+        .get(currentApiURL)
         .ok((res) => res.status === 401)
         .then((res) => {
           expect(res.status).toBe(401);
         });
     });
 
-    // *TODO STOPED HERE
-    it("Should get all the giving user transactions", async () => {});
+    it("Should get all the transactions of the current user session ", async () => {
+      const room = await roomService.createRoom({ name: "newRoom", admin: currentUser._id });
+
+      // updating the local user session
+      await authCreateSession(agent).login();
+      currentUser = (await authCreateSession(agent).getUser()).body;
+
+      // Creating transactions
+      await transactionService.createTransaction({
+        amount: 100,
+        category: 1,
+        madeBy: currentUser._id,
+        roomId: room._id.toString(),
+      });
+
+      await transactionService.createTransaction({
+        amount: 120,
+        category: 2,
+        madeBy: currentUser._id,
+        roomId: room._id.toString(),
+      });
+
+      await agent.get(currentApiURL).then((res) => {
+        expect(res.body.length).toBe(2);
+        expect(res.body[0].amount).toBe(100);
+        expect(res.body[1].amount).toBe(120);
+      });
+    });
+  });
+
+  describe("GET /room/:roomId - get room transactions", () => {
+    const currentApiURL = (roomId) => `${API_URL}/room/${roomId}`;
+
+    it("Should return 401 if user aint logged in", async () => {
+      await superagent
+        .get(currentApiURL(fakeObjectId))
+        .ok((res) => res.status === 401)
+        .then((res) => expect(res.status).toBe(401));
+    });
+
+    it("Should return 401 if user aint part of the room", async () => {
+      const room = await createRoom(fakeObjectId);
+      await agent
+        .get(currentApiURL(room._id))
+        .ok((res) => res.status === 401)
+        .then((res) => {
+          expect(res.status).toBe(401);
+        });
+    });
+
+    it("Should return all transactions of the specific room", async () => {
+      const room = await roomService.createRoom({ name: "newRoom", admin: currentUser._id });
+      const user2 = await new User({
+        email: "mockedEmail2@gmail.com",
+        googleId: 9999,
+        roomId: room._id,
+      }).save();
+      // updating the local user session
+      await authCreateSession(agent).login();
+      currentUser = (await authCreateSession(agent).getUser()).body;
+
+      // Creating transactions
+      await transactionService.createTransaction({
+        amount: 100,
+        category: 1,
+        madeBy: currentUser._id,
+        roomId: room._id.toString(),
+      });
+
+      await transactionService.createTransaction({
+        amount: 120,
+        category: 2,
+        madeBy: user2._id.toString(),
+        roomId: room._id.toString(),
+      });
+
+      await agent.get(currentApiURL(room._id)).then((res) => {
+        expect(res.body.length).toBe(2);
+        expect(res.body[0].amount).toBe(100);
+        expect(res.body[1].amount).toBe(120);
+        expect(res.status).toBe(200);
+      });
+    });
   });
 });

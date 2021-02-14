@@ -25,10 +25,8 @@ router.patch("/:transId", [auth, transactionPermissions], async (req, res) => {
   res.send(await service.updateTransaction(req.params.transId, dto));
 });
 
-// *TODO STOPED HERE
-
-router.get("/user/:userId", auth, async (req, res) => {
-  res.send(await service.getTransactionsOfUser(req.params.userId));
+router.get("/user", auth, async (req, res) => {
+  res.send(await service.getTransactionsOfUser(req.user._id));
 });
 
 router.get("/room/:roomId", [auth, roomPermissions], async (req, res) => {

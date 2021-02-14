@@ -1,27 +1,29 @@
 import express from "express";
 const router = express.Router();
 import { userEntity as service } from "../services/servicesManager.js";
-const { findAll, create, findById, update, deleteById } = service;
+import auth from "../middlewares/auth.js";
 
-router.get("/", async (req, res) => {
-  res.send(await findAll());
-});
+// Not needed at the moment.
+// router.get("/", async (req, res) => {
+//   res.send(await service.findAll());
+// });
 
 router.post("/", async (req, res) => {
-  res.send(await create(req.body));
+  res.send(await service.create(req.body));
 });
 
-router.get("/:id", async (req, res) => {
-  const userById = await findById(req.params.id);
+router.get("/", auth, async (req, res) => {
+  const userById = await service.findById(req.user._id);
   res.send(userById);
 });
 
-router.patch("/:id", async (req, res) => {
-  const updatedUser = await update(req.params.id, req.body);
+router.patch("/", auth, async (req, res) => {
+  const userById = await service.findById(req.user._id);
+  const updatedUser = await service.update(userById, req.body);
   res.send(updatedUser);
 });
 
-router.delete("/:id", async (req, res) => {
-  res.send(await deleteById(req.params.id));
+router.delete("/", auth, async (req, res) => {
+  res.status(202).send(await service.deleteById(req.user._id));
 });
 export default router;
