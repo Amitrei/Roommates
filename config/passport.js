@@ -6,7 +6,6 @@ import { userEntity as service } from "./../services/servicesManager.js";
 const GoogleStrategy = googleAuth.OAuth2Strategy;
 dotenv.config();
 
-
 passport.serializeUser(function (user, done) {
   done(null, user._id);
 });
@@ -14,7 +13,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(async function (id, done) {
   let user;
   try {
-    user = await service.findOne({ _id: id }, "email", "roomId");
+    user = await service.findOne({ _id: id }, "email", "roomId", "profilePicture");
   } catch (ex) {
     user = null;
   }

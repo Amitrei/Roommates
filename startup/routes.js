@@ -15,7 +15,7 @@ import cookie from "cookie-session";
 export default (app) => {
   app.use(
     cors({
-      origin: "http://localhost:3002",
+      origin: "http://localhost:3000",
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
     })

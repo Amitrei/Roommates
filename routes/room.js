@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
   const { body } = req;
-  body.admin = req.user._id;
+  body.admin = req.user._id.toString();
   res.send(await service.createRoom(body));
 });
 

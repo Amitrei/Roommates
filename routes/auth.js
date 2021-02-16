@@ -8,7 +8,7 @@ router.get(
   passport.authenticate("google", {
     scope: [
       "https://www.googleapis.com/auth/plus.login",
-      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
     ],
   })
 );
@@ -18,17 +18,14 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/login" }),
   function (req, res) {
     console.log(res.cookies);
-    res.redirect("/api/auth/show");
+    res.redirect(process.env.FRONT_END_URL);
   }
 );
 
 router.get("/logout", function (req, res) {
   req.logout();
+  req.user = {};
   res.redirect("/");
-});
-
-router.get("/show", (req, res) => {
-  res.send(req.user);
 });
 
 router.get("/user", (req, res) => {
