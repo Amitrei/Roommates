@@ -14,7 +14,7 @@ export default class TransactionService extends EntitiesService {
     const user = await this.userService.findById(transaction.madeBy);
 
     if (!room._id.equals(user.roomId)) throw new BadRequest("User isnt a part of this room. ");
-
+    transaction.madeByEmail = user.email;
     const newTransaction = await this.create(transaction);
 
     const roomTransactions = [...room.transactions, newTransaction._id];

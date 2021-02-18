@@ -37,9 +37,9 @@ export default class RoomService extends EntitiesService {
     return deletedRoom;
   };
 
-  addMember = async (roomId, userId) => {
+  addMember = async (roomId, userEmail) => {
     const room = await this.findById(roomId);
-    const user = await this.userService.findById(userId);
+    const user = await this.userService.findOne({ email: userEmail });
 
     const isUserAlreadyMember = room.members.filter((m) => m._id.equals(user._id));
     if (isUserAlreadyMember.length)

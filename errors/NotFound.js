@@ -1,6 +1,6 @@
 export default class NotFoundError extends Error {
   constructor(modelName) {
-    const message = `couldnt find ${modelName} id..`;
+    const message = `couldnt find ${modelName} ..`;
     super(message);
     this.name = this.constructor.name;
 

@@ -22,8 +22,9 @@ router.get("/", async (req, res) => {
   res.send(req.session.user);
 });
 
-export default router;
 
 router.get("/user", (req, res) => {
   return req.user ? res.send(req.user) : "no session has found";
 });
+
+export default router;

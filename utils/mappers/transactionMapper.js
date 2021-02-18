@@ -1,9 +1,8 @@
 export const fromClient = (clientTransObj, user, roomId = null) => {
-  return Object.freeze({
+  return {
     roomId,
-    madeBy: user._id,
+    madeBy: user._id.toString(),
     amount: clientTransObj.amount,
     category: clientTransObj.category,
-    date: new Date(),
-  });
+  };
 };

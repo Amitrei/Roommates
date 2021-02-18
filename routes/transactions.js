@@ -6,9 +6,9 @@ import auth from "../middlewares/auth.js";
 import roomPermissions from "../middlewares/roomPermissions.js";
 import transactionPermissions from "../middlewares/transactionPermissions.js";
 
-router.get("/", async (req, res) => {
-  res.send(await service.findAll());
-});
+// router.get("/", async (req, res) => {
+//   res.send(await service.findAll());
+// });
 
 router.post("/:roomId", [auth, roomPermissions], async (req, res) => {
   const { body, user, params } = req;

@@ -27,7 +27,7 @@ const roomSchema = mongoose.Schema({
 
 const validate = (room) => {
   const validateRoomSchema = Joi.object({
-    name: Joi.string().required().min(3).alphanum().max(30),
+    name: Joi.string().required().min(3).max(30),
     admin: Joi.objectId().required(),
     members: Joi.array().items(Joi.objectId()),
     transactions: Joi.array().items(Joi.objectId()),
