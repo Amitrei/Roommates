@@ -3,7 +3,6 @@
 import User from "../models/user.js";
 import Transaction from "../models/transaction.js";
 import Room from "../models/room.js";
-import Category from "../models/category.js";
 import EntitiesService from "./EntitiesService.js";
 import RoomService from "./RoomService.js";
 import TransactionService from "./TransactionService.js";
@@ -14,4 +13,3 @@ export const userEntity = new EntitiesService(User);
 
 export const roomService = new RoomService(Room, transactionEntity, userEntity);
 export const transactionService = new TransactionService(Transaction, userEntity, roomEntitiy);
-export const categoryService = new EntitiesService(Category);

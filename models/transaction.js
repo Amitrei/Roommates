@@ -18,7 +18,7 @@ const transactionSchema = mongoose.Schema({
   madeBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   madeByEmail: { type: String, required: true },
   amount: { type: Number, min: 1, required: true },
-  category: { type: Number, required: true },
+  category: { type: String, required: true },
   date: { type: String, default: currentDate },
 });
 
@@ -30,7 +30,7 @@ const validate = (transaction) => {
     madeBy: Joi.objectId().required(),
     madeByEmail: Joi.string().required().email(),
     amount: Joi.number().integer().min(1).required(),
-    category: Joi.number().required(),
+    category: Joi.string().required(),
     date: Joi.string().allow(null),
   });
 

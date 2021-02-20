@@ -8,10 +8,10 @@ import transactions from "../routes/transactions.js";
 import rooms from "../routes/room.js";
 import users from "../routes/user.js";
 import auth from "../routes/auth.js";
+import categories from "../routes/categories.js";
 import mockedAuthRoute from "../routes/mockAuthRoute.js";
 import mockedAuth from "../middlewares/mockedAuth.js";
 import cookie from "cookie-session";
-
 export default (app) => {
   app.use(
     cors({
@@ -40,5 +40,6 @@ export default (app) => {
   app.use("/api/transactions/", transactions);
   app.use("/api/users/", users);
   app.use("/api/rooms/", rooms);
+  app.use("/api/categories/", categories);
   app.use(errorHandler);
 };
