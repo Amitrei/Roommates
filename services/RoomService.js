@@ -2,6 +2,9 @@ import EntitiesService from "./EntitiesService.js";
 import BadRequest from "./../errors/BadRequest.js";
 import excludeProps from "../utils/excludeProps.js";
 import NoSuchProperty from "./../errors/NoSuchProperty.js";
+import { notifcationService } from "./servicesManager.js";
+import socketStore from "../services/SocketService.js";
+import { io } from "../index.js";
 
 export default class RoomService extends EntitiesService {
   constructor(roomModel, transactionService, userService) {
@@ -53,6 +56,32 @@ export default class RoomService extends EntitiesService {
     await this.userService.update(user, { roomId: room._id });
 
     return room;
+  };
+
+  inviteMember = async (roomId, userEmail) => {
+    const room = await this.findById(roomId);
+    const user = await this.userService.findOne({ email: userEmail });
+
+    // add user to the invited array of room
+
+    if (room.invitedMembers.includes(user._id.toString())) {
+      throw new BadRequest("User already invited");
+    }
+
+    if (user && room) {
+      const invitedMembers = [...room.invitedMembers, user._id];
+      await this.update(room, { invitedMembers });
+    }
+
+    //create and send notification to user
+    const notification = await notifcationService.create({
+      roomId: room._id.toString(),
+      roomName: room.name,
+      sentTo: user._id.toString(),
+    });
+
+    // sending notification using Socket io
+    io.to(socketStore[user.email]).emit("notificationRecieved", notification);
   };
 
   updateRoomName = async (roomId, requestBody) => {

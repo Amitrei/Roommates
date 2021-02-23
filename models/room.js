@@ -13,6 +13,10 @@ export default () =>
 const roomSchema = mongoose.Schema({
   name: { type: String, required: true, minLength: 3, maxLength: 30 },
   admin: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  invitedMembers: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    default: [],
+  },
   members: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     default: [],
@@ -30,6 +34,7 @@ const validate = (room) => {
     name: Joi.string().required().min(3).max(30),
     admin: Joi.objectId().required(),
     members: Joi.array().items(Joi.objectId()),
+    invitedMembers: Joi.array().items(Joi.objectId()),
     transactions: Joi.array().items(Joi.objectId()),
     totalExpenses: Joi.number().min(0),
   });

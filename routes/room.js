@@ -25,6 +25,12 @@ router.put("/:id", [auth, adminPermissions], async (req, res) => {
   res.send(await service.updateRoomName(req.params.id, req.body));
 });
 
+//inviting member
+router.post("/:id/invite/:memberEmail", async (req,res) => {
+  const { id, memberEmail } = req.params;
+  res.send(await service.inviteMember(id,memberEmail))
+})
+
 // Adding a member
 router.post("/:id/members/:memberEmail", [auth, adminPermissions], async (req, res) => {
   const { id, memberEmail } = req.params;

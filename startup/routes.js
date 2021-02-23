@@ -8,6 +8,8 @@ import transactions from "../routes/transactions.js";
 import rooms from "../routes/room.js";
 import users from "../routes/user.js";
 import auth from "../routes/auth.js";
+import socket from "../routes/socket.js";
+import notifications from "../routes/notifications.js";
 import categories from "../routes/categories.js";
 import mockedAuthRoute from "../routes/mockAuthRoute.js";
 import mockedAuth from "../middlewares/mockedAuth.js";
@@ -35,11 +37,12 @@ export default (app) => {
   }
   app.use(passport.initialize());
   app.use(passport.session());
-
   app.use("/api/auth/", auth);
   app.use("/api/transactions/", transactions);
   app.use("/api/users/", users);
   app.use("/api/rooms/", rooms);
   app.use("/api/categories/", categories);
+  app.use("/api/sockets", socket);
+  app.use("/api/notifications", notifications);
   app.use(errorHandler);
 };

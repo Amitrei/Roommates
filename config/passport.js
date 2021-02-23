@@ -31,6 +31,7 @@ export default passport.use(
     async function (accessToken, refreshToken, profile, done) {
       let user;
 
+      console.error(profile);
       try {
         user = await service.findOne({ googleId: profile.id });
       } catch (ex) {
