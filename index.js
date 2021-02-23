@@ -27,6 +27,6 @@ export const io = new Server(appListen, {
 });
 
 io.on("connection", (socket) => {
-  socket.emit("hello", "world");
+  console.log("socket io is connected");
 });
 console.log(process.env.NODE_ENV);

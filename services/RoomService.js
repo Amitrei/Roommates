@@ -75,6 +75,8 @@ export default class RoomService extends EntitiesService {
 
     //create and send notification to user
     const notification = await notifcationService.create({
+      type:"memberInvitation",
+      content:`You have been invited to join the room ${room.name}`,
       roomId: room._id.toString(),
       roomName: room.name,
       sentTo: user._id.toString(),

@@ -11,4 +11,8 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+router.delete("/:id", auth, async (req, res) => {
+res.send(await notifcationService.deleteById(req.params.id))
+});
+
 export default router;

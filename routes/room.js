@@ -26,13 +26,13 @@ router.put("/:id", [auth, adminPermissions], async (req, res) => {
 });
 
 //inviting member
-router.post("/:id/invite/:memberEmail", async (req,res) => {
+router.post("/:id/invite/:memberEmail", async (req, res) => {
   const { id, memberEmail } = req.params;
-  res.send(await service.inviteMember(id,memberEmail))
-})
+  res.send(await service.inviteMember(id, memberEmail));
+});
 
 // Adding a member
-router.post("/:id/members/:memberEmail", [auth, adminPermissions], async (req, res) => {
+router.post("/:id/members/:memberEmail", [auth], async (req, res) => {
   const { id, memberEmail } = req.params;
   res.send(await service.addMember(id, memberEmail));
 });

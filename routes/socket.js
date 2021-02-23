@@ -3,9 +3,8 @@ import socketStore from "../services/SocketService.js";
 const router = express.Router();
 
 router.post("/", (req, res) => {
-  console.error(req.user.email);
-  console.log(res.body);
-  socketStore[req.user.email] = req.body.socketId;
+  if (req.user?.email) socketStore[req.user.email] = req.body.socketId;
+
   res.sendStatus(200);
 });
 

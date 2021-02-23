@@ -11,6 +11,8 @@ export default () =>
   });
 
 const notificationSchema = mongoose.Schema({
+  type: { type: String, required: true },
+  content: { type: String, required: true },
   seen: { type: Boolean, default: false },
   roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
   roomName: { type: String, required: true },
@@ -19,6 +21,8 @@ const notificationSchema = mongoose.Schema({
 
 const validate = (notification) => {
   const validateNotification = Joi.object({
+    type: Joi.string().required(),
+    content: Joi.string().required(),
     seen: Joi.boolean(),
     roomId: Joi.objectId().required(),
     roomName: Joi.string().required(),
