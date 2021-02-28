@@ -52,6 +52,12 @@ export default class RoomService extends EntitiesService {
     const members = [...room.members, user];
     await this.update(room, { members });
 
+    // deleteing invitation
+    const inivitIndex = room.invitedMembers.findIndex((member) => member._id === user._id);
+    let invitedMembers = [...room.invitedMembers];
+    invitedMembers.splice(inivitIndex, 1);
+    await this.update(room, { invitedMembers });
+
     // assigning the roomId into the specific user model
     await this.userService.update(user, { roomId: room._id });
 
@@ -64,7 +70,10 @@ export default class RoomService extends EntitiesService {
 
     // add user to the invited array of room
 
-    if (room.invitedMembers.includes(user._id.toString())) {
+    if (
+      room.invitedMembers.includes(user._id.toString()) ||
+      room.members.includes(user._id.toString())
+    ) {
       throw new BadRequest("User already invited");
     }
 
@@ -75,8 +84,8 @@ export default class RoomService extends EntitiesService {
 
     //create and send notification to user
     const notification = await notifcationService.create({
-      type:"memberInvitation",
-      content:`You have been invited to join the room ${room.name}`,
+      type: "memberInvitation",
+      content: `You have been invited to join the room ${room.name}`,
       roomId: room._id.toString(),
       roomName: room.name,
       sentTo: user._id.toString(),
@@ -110,5 +119,19 @@ export default class RoomService extends EntitiesService {
     await this.userService.update(user, { roomId: null });
 
     return await this.update(room, { members });
+  };
+
+  getAllMembers = async (roomId) => {
+    const room = await this.findById(roomId);
+    this.userService;
+    let detailedMembers = [];
+    const members = await this.userService.find({ roomId });
+    members.forEach(member => {
+      detailedMembers.push({email:member.email,profilePicture:member.profilePicture})
+    })
+    
+    
+    
+  return detailedMembers;
   };
 }

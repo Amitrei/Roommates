@@ -20,6 +20,10 @@ router.delete("/:id", [auth, adminPermissions], async (req, res) => {
   res.status(202).send(await service.deleteRoom(req.params.id));
 });
 
+router.get("/:roomId/members", [auth, roomPermissions], async (req, res) => {
+  res.send(await service.getAllMembers(req.params.roomId));
+});
+
 // Updating room name
 router.put("/:id", [auth, adminPermissions], async (req, res) => {
   res.send(await service.updateRoomName(req.params.id, req.body));

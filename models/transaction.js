@@ -11,7 +11,7 @@ export default () =>
     validate,
   });
 
-const currentDate = moment().format("DD/MM/YYYY HH:mm").toString();
+const currentDate = moment().format("DD/MM/YYYY").toString();
 
 const transactionSchema = mongoose.Schema({
   roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
